@@ -21,7 +21,8 @@ console.log('Created .env.production with static mode enabled');
 // Run Next.js static export
 try {
   console.log('Building Next.js static export...');
-  execSync('npm run build && npm run export', { stdio: 'inherit' });
+  // Updated for Next.js 14+ which has export built into the build command
+  execSync('npm run build', { stdio: 'inherit' });
   
   // Create .nojekyll file to disable Jekyll processing on GitHub Pages
   fs.writeFileSync(path.join(__dirname, 'out', '.nojekyll'), '');
