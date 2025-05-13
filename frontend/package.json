@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "build:static": "node build-static.js"
+    "build:static": "next build"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
