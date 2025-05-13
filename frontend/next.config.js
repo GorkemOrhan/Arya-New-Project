@@ -1,29 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Enable basePath for GitHub Pages
-  basePath: process.env.NODE_ENV === 'production' ? "/Automated-Online-Exam-System" : "",
-  output: "export",
+  output: 'export',
+  basePath: process.env.NODE_ENV === 'production' ? "/Arya-New-Project" : "",
+  assetPrefix: process.env.NODE_ENV === 'production' ? "/Arya-New-Project/" : "",
+  trailingSlash: true,
   reactStrictMode: true,
-  // Make basePath available to client-side code
+  images: {
+    unoptimized: true,
+  },
   publicRuntimeConfig: {
-    basePath: process.env.NODE_ENV === 'production' ? "/Automated-Online-Exam-System" : "",
+    basePath: process.env.NODE_ENV === 'production' ? "/Arya-New-Project" : "",
   },
   env: {
-    API_URL: process.env.API_URL || 'http://localhost:5000/api',
-  },
-  // Note: rewrites won't work with static exports, but we'll keep this for development
-  async rewrites() {
-    // Only apply in development
-    if (process.env.NODE_ENV === 'development') {
-      return [
-        {
-          source: '/api/:path*',
-          destination: `${process.env.API_URL || 'http://localhost:5000/api'}/:path*`,
-        },
-      ];
-    }
-    return [];
+    NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000',
   },
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;
