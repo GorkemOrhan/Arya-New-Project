@@ -54,29 +54,50 @@ def register():
 @auth_bp.route('/login', methods=['POST'])
 def login():
     """Login a user."""
-    data = request.get_json()
-    
-    # Validate required fields
-    if 'email' not in data or 'password' not in data:
-        return jsonify({'error': 'Email and password are required'}), 400
-    
-    # Find user by email
-    user = User.query.filter_by(email=data['email']).first()
-    
-    # Check if user exists and password is correct
-    if not user or not user.check_password(data['password']):
-        return jsonify({'error': 'Invalid email or password'}), 401
-    
-    # Generate access token - ensure identity is a string
-    user_id_str = str(user.id)
-    logger.info(f"Creating token for user ID: {user_id_str} (type: {type(user_id_str)})")
-    access_token = create_access_token(identity=user_id_str)
-    
-    return jsonify({
-        'message': 'Login successful',
-        'user': user.to_dict(),
-        'access_token': access_token
-    }), 200
+    try:
+        logger.info("Login attempt received")
+        data = request.get_json()
+        logger.info(f"Login data: {data}")
+        
+        # Validate required fields
+        if 'email' not in data or 'password' not in data:
+            logger.warning("Missing email or password in login request")
+            return jsonify({'error': 'Email and password are required'}), 400
+        
+        # Find user by email
+        user = User.query.filter_by(email=data['email']).first()
+        
+        if not user:
+            logger.warning(f"Login failed: User not found with email {data['email']}")
+            return jsonify({'error': 'Invalid email or password'}), 401
+        
+        logger.info(f"User found: {user.username}, ID: {user.id}, Admin: {user.is_admin}")
+        logger.info(f"User created_at: {user.created_at}, updated_at: {user.updated_at}")
+        
+        # Check password
+        if not user.check_password(data['password']):
+            logger.warning(f"Login failed: Invalid password for user {user.email}")
+            return jsonify({'error': 'Invalid email or password'}), 401
+        
+        logger.info(f"Password verified for user {user.email}")
+        
+        # Generate access token - ensure identity is a string
+        user_id_str = str(user.id)
+        logger.info(f"Creating token for user ID: {user_id_str} (type: {type(user_id_str)})")
+        access_token = create_access_token(identity=user_id_str)
+        
+        # Create user dict with safe handling of datetime fields
+        user_dict = user.to_dict()
+        logger.info(f"User dict created: {user_dict}")
+        
+        return jsonify({
+            'message': 'Login successful',
+            'user': user_dict,
+            'access_token': access_token
+        }), 200
+    except Exception as e:
+        logger.error(f"Login error: {str(e)}", exc_info=True)
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 
 @auth_bp.route('/me', methods=['GET'])
