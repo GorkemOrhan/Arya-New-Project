@@ -56,7 +56,9 @@ def create_app(config_class=Config):
     CORS(app, resources={r"/*": {"origins": [
     "https://gorkemorhan.github.io",
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:3000",
+    "https://*.github.io",
+    "https://*.render.com"
         ]}}, supports_credentials=True)
     
     jwt.init_app(app)

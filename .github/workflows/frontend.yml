@@ -80,6 +80,8 @@ jobs:
     - name: Deploy to GitHub Pages
       run: |
         # Build for static export
+        # Set the API URL to your Render backend
+        export NEXT_PUBLIC_API_URL=https://arya-new-project.onrender.com/api
         npm run build:static
         
         # Configure git
